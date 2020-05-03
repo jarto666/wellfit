@@ -2,3 +2,12 @@
   border: 0;
   background: none;
 }
+
+.input-reset:focus {
+  outline: none;
+}
+
+.button-reset {
+  border: 0;
+  cursor: pointer;
+}
