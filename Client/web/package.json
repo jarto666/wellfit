@@ -10,11 +10,14 @@
     "sanitize.css": "^11.0.0"
   },
   "scripts": {
-    "lint:css": "stylelint \"./src/**/*.css\"",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "npm run lint:css && npm run lint:js",
+    "lint:js": "npm run lint:eslint -- .",
+    "lint:css": "stylelint \"./src/**/*.css\"",
+    "lint:eslint": "eslint --ignore-path .gitignore --ignore-pattern src/serviceWorker.js"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -32,6 +35,12 @@
     ]
   },
   "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "^2.5.1",
     "stylelint": "^13.3.3",
     "stylelint-config-css-modules": "^2.2.0",
     "stylelint-config-standard": "^20.0.0",

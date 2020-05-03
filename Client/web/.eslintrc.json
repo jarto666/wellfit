@@ -1,0 +1,105 @@
+{
+	"parser": "babel-eslint",
+	"extends": [
+		"airbnb",
+		"react-app"
+	],
+	"env": {
+		"browser": true,
+		"node": true,
+		"jest": true,
+		"es6": true
+	},
+	"plugins": [
+		"react",
+		"jsx-a11y",
+		"import"
+	],
+	"rules": {
+		"linebreak-style": "off",
+		"indent": "off",
+		"comma-dangle": [
+			"error",
+			{
+				"arrays": "always-multiline",
+				"objects": "always-multiline",
+				"imports": "always-multiline",
+				"exports": "always-multiline",
+				"functions": "never"
+			}
+		],
+		"import/no-named-as-default": "off",
+		"max-len": [
+			1,
+			150,
+			{
+				"ignoreComments": true,
+				"ignoreUrls": true
+			}
+		],
+		"newline-per-chained-call": "off",
+		"react/jsx-filename-extension": "off",
+		"react/jsx-handler-names": 2,
+		"react/prefer-stateless-function": "off",
+		"react/destructuring-assignment": "off",
+		"no-multiple-empty-lines": [
+			1,
+			{
+				"max": 1
+			}
+		],
+		"no-underscore-dangle": "off",
+		"react/jsx-one-expression-per-line": "off",
+		"operator-linebreak": [
+			"error",
+			"before",
+			{
+				"overrides": {
+					"&&": "ignore"
+				}
+			}
+		],
+		"object-curly-newline": "off",
+		"jsx-a11y/label-has-associated-control": [
+			"error",
+			{
+				"required": {
+					"some": [
+						"nesting",
+						"id"
+					]
+				}
+			}
+		],
+		"jsx-a11y/label-has-for": [
+			"error",
+			{
+				"required": {
+					"some": [
+						"nesting",
+						"id"
+					]
+				}
+			}
+		],
+		"padded-blocks": [
+			"error",
+			{
+				"blocks": "never",
+				"classes": "never",
+				"switches": "never"
+			}
+		],
+		"react/jsx-props-no-spreading": "off"
+	},
+	"settings": {
+		"import/resolver": {
+			"node": {
+				"moduleDirectory": [
+					"node_modules",
+					"src/"
+				]
+			}
+		}
+	}
+}
