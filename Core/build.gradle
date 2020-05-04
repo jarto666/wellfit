@@ -1,0 +1,12 @@
+plugins {
+    id 'base'
+}
+
+group 'com.wellfit'
+version '1.0-SNAPSHOT'
+
+repositories {
+}
+
+dependencies {
+}
