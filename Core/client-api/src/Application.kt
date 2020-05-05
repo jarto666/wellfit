@@ -2,6 +2,7 @@ package com.wellfit.client.api
 
 import com.auth0.jwk.JwkProviderBuilder
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.wellfit.client.api.di.mainModule
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -16,10 +17,13 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.content.default
 import io.ktor.http.content.static
 import io.ktor.jackson.jackson
+import io.ktor.locations.Locations
 import io.ktor.response.respond
 import io.ktor.routing.get
 import io.ktor.routing.route
 import io.ktor.routing.routing
+import org.koin.core.context.startKoin
+import org.koin.core.logger.PrintLogger
 import java.util.concurrent.TimeUnit
 
 
@@ -28,6 +32,17 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
+
+    // start a KoinApplication in Global context
+    startKoin {
+        // declare used logger
+        logger(PrintLogger())
+        // declare used modules
+        modules(mainModule)
+    }
+
+    install(Locations)
+
     install(CORS) {
         method(HttpMethod.Options)
         method(HttpMethod.Put)
@@ -63,7 +78,7 @@ fun Application.module(testing: Boolean = false) {
 
     routing {
         static("/") {
-            default("index.html")
+            default("resources/index.html")
         }
 
         get("/json/jackson") {
@@ -71,7 +86,7 @@ fun Application.module(testing: Boolean = false) {
         }
 
         authenticate() {
-            route("/graphql") {
+            route("/protected") {
                 get {
                     call.respond("Sheet")
 //                    val user = call.authentication.principal<JwtTokenManager.TokenValidity.Valid>()

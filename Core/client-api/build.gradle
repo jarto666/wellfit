@@ -23,13 +23,11 @@ sourceSets {
 }
 
 repositories {
-    mavenLocal()
     jcenter()
-    maven { url 'https://kotlin.bintray.com/ktor' }
+    //maven { url 'https://kotlin.bintray.com/ktor' }
 }
 
 dependencies {
-    //compile project(":wellfit.auth")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "io.ktor:ktor-server-netty:$ktor_version"
     implementation "ch.qos.logback:logback-classic:$logback_version"
@@ -37,5 +35,11 @@ dependencies {
     implementation "io.ktor:ktor-auth:$ktor_version"
     implementation "io.ktor:ktor-auth-jwt:$ktor_version"
     implementation "io.ktor:ktor-jackson:$ktor_version"
+    implementation "io.ktor:ktor-locations:$ktor_version"
+    // GraphQL
+    compile "com.apurebase:kgraphql:$kgraphql_version"
+    // Dependency Injection
+    implementation "org.koin:koin-ktor:$koin_version"
+
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
 }
