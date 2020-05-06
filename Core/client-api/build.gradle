@@ -1,0 +1,56 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.github.jengelman.gradle.plugins:shadow:5.2.0"
+    }
+}
+
+apply plugin: 'kotlin'
+apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: 'application'
+
+group 'com.wellfit.client.api'
+version '0.0.1'
+mainClassName = "com.wellfit.client.api.ApplicationKt"
+
+shadowJar {
+    baseName = 'wellfit.client.api'
+    classifier = null
+    version = null
+}
+
+sourceSets {
+    main.kotlin.srcDirs = main.java.srcDirs = ['src']
+    test.kotlin.srcDirs = test.java.srcDirs = ['test']
+    main.resources.srcDirs = ['resources']
+    test.resources.srcDirs = ['testresources']
+}
+
+repositories {
+    jcenter()
+    maven { url 'https://kotlin.bintray.com/ktor' }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation "ch.qos.logback:logback-classic:$logback_version"
+    implementation "io.ktor:ktor-server-core:$ktor_version"
+    implementation "io.ktor:ktor-auth:$ktor_version"
+    implementation "io.ktor:ktor-auth-jwt:$ktor_version"
+    implementation "io.ktor:ktor-jackson:$ktor_version"
+    implementation "io.ktor:ktor-locations:$ktor_version"
+
+    api "com.graphql-java:graphql-java:2020-04-29T07-25-05-1a7c11c"
+    implementation "com.expediagroup:graphql-kotlin-schema-generator:2.1.1"
+
+    // Dependency Injection
+    implementation "org.koin:koin-ktor:$koin_version"
+
+    testImplementation "io.ktor:ktor-server-tests:$ktor_version"
+}
