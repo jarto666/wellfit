@@ -1,13 +1,17 @@
 package com.wellfit.client.api
 
 import com.auth0.jwk.JwkProviderBuilder
+import com.expediagroup.graphql.SchemaGeneratorConfig
+import com.expediagroup.graphql.TopLevelObject
+import com.expediagroup.graphql.toSchema
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.wellfit.client.api.di.mainModule
+import com.wellfit.client.api.graphql.GraphQLHandler
+import com.wellfit.client.api.graphql.WidgetService
+import com.wellfit.client.api.graphql.WidgetUpdater
 import io.ktor.application.Application
-import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.auth.Authentication
-import io.ktor.auth.authenticate
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
 import io.ktor.features.CORS
@@ -18,14 +22,10 @@ import io.ktor.http.content.default
 import io.ktor.http.content.static
 import io.ktor.jackson.jackson
 import io.ktor.locations.Locations
-import io.ktor.response.respond
-import io.ktor.routing.get
-import io.ktor.routing.route
 import io.ktor.routing.routing
 import org.koin.core.context.startKoin
 import org.koin.core.logger.PrintLogger
 import java.util.concurrent.TimeUnit
-
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -73,26 +73,6 @@ fun Application.module(testing: Boolean = false) {
     install(ContentNegotiation) {
         jackson {
             enable(SerializationFeature.INDENT_OUTPUT)
-        }
-    }
-
-    routing {
-        static("/") {
-            default("resources/index.html")
-        }
-
-        get("/json/jackson") {
-            call.respond(mapOf("hello" to "world"))
-        }
-
-        authenticate() {
-            route("/protected") {
-                get {
-                    call.respond("Sheet")
-//                    val user = call.authentication.principal<JwtTokenManager.TokenValidity.Valid>()
-//                        ?: JwtTokenManager.TokenValidity.NotValid
-                }
-            }
         }
     }
 }
