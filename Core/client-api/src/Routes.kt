@@ -3,10 +3,13 @@ package com.wellfit.client.api
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.wellfit.client.api.graphql.GraphQLHandler
 import io.ktor.application.Application
-import io.ktor.http.content.default
-import io.ktor.http.content.static
+import io.ktor.application.call
+import io.ktor.http.content.*
+import io.ktor.http.push
+import io.ktor.routing.get
 import io.ktor.routing.routing
 import org.koin.ktor.ext.inject
+import java.io.File
 
 @Suppress("unused")
 fun Application.routes() {
@@ -17,8 +20,12 @@ fun Application.routes() {
 
         graphql(qlHandler, json)
 
+
         static("/") {
-            default("index.html")
+            defaultResource("index.html")
+//            staticRootFolder = File("files")
+//
+//            default("index.html")
         }
     }
 }

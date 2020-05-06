@@ -23,12 +23,14 @@ import io.ktor.http.content.static
 import io.ktor.jackson.jackson
 import io.ktor.locations.Locations
 import io.ktor.routing.routing
+import io.ktor.util.KtorExperimentalAPI
 import org.koin.core.context.startKoin
 import org.koin.core.logger.PrintLogger
 import java.util.concurrent.TimeUnit
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
+@KtorExperimentalAPI
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
