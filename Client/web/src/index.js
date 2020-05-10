@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from 'containers/App';
-import * as serviceWorker from './serviceWorker';
-import { Auth0Provider } from './auth0';
-import config from './auth_config.json';
-import history from './utils/history';
+import * as serviceWorker from 'serviceWorker';
+import { Auth0Provider } from 'utils/auth/auth0';
+import config from 'utils/auth/auth_config.json';
+import history from 'utils/history';
 
 import 'sanitize.css';
 import './index.css';

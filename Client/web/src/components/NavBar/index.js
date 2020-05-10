@@ -1,12 +1,14 @@
 import React from 'react';
-import { useAuth0 } from 'auth0';
+import { useAuth0 } from 'utils/auth/auth0';
 import { Link } from 'react-router-dom';
+
+import styles from './index.module.css';
 
 const NavBar = () => {
   const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
   return (
-    <div>
+    <div className={styles.container}>
       {!isAuthenticated && (
         <button type="button" onClick={() => loginWithRedirect({})}>Log in</button>
       )}

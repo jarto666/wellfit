@@ -1,0 +1,21 @@
+.container {
+  display: flex;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.info {
+  width: 30%;
+}
+
+.body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.image {
+  object-fit: contain;
+}
