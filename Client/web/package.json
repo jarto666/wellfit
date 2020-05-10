@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "auth0-js": "^9.13.2",
+    "@auth0/auth0-spa-js": "^1.8.1",
     "history": "^4.10.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",

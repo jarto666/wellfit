@@ -1,46 +1,25 @@
-import React, { useCallback, useEffect } from 'react';
-import useAuth0 from 'auth/useAuth';
-import PropTypes from 'prop-types';
+import React from 'react';
+import NavBar from 'components/NavBar';
 
-const useGoToHandler = (history) => useCallback((route) => () => history.replace(`/${route}`), [history]);
+import { Router, Route, Switch } from 'react-router-dom';
+import Profile from 'components/Profile';
+import PrivateRoute from 'components/PrivateRoute';
+import history from 'utils/history';
 
-const App = ({ history }) => {
-  const { login, logout, isAuthenticated, renewSession } = useAuth0();
+const App = () => (
+  <div className="App">
+    <Router history={history}>
+      <header>
+        <NavBar />
+      </header>
 
-  const goToHandler = useGoToHandler(history);
-  useEffect(() => {
-    if (localStorage.getItem('isLoggedIn') === 'true') {
-      renewSession();
-    }
-  }, [renewSession]);
+      <Switch>
+        <Route path="/" exact />
 
-  return (
-    <div>
-      <button type="button" onClick={goToHandler('home')}>
-        Home
-      </button>
-
-      {!isAuthenticated && (
-        <button type="button" onClick={login}>
-          Log In
-        </button>
-      )}
-
-      {isAuthenticated && (
-        <button type="button" onClick={logout}>
-          Log Out
-        </button>
-      )}
-    </div>
-  );
-};
-
-App.propTypes = {
-  history: PropTypes.shape({}),
-};
-
-App.defaultProps = {
-  history: {},
-};
+        <PrivateRoute path="/profile" component={Profile} />
+      </Switch>
+    </Router>
+  </div>
+);
 
 export default App;
