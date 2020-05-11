@@ -1,0 +1,18 @@
+{
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-css-modules"
+  ],
+  "plugins": [
+		"stylelint-order"
+	],
+	"rules": {
+		"order/order": [
+			"custom-properties",
+			"declarations"
+		],
+    "no-empty-source": null,
+    "value-keyword-case": null,
+    "value-list-comma-newline-after": null
+  }
+}
