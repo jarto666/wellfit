@@ -1,23 +1,22 @@
 package com.wellfit.client.api.graphql
 
-import com.expediagroup.graphql.annotations.GraphQLDescription
+import com.apurebase.kgraphql.KGraphQL
 
-data class Widget(val id: Int, val value: String)
+data class Article(val id: Int, val text: String)
 
-class WidgetService {
-    @GraphQLDescription("sample")
-    fun widgetById(id: Int): Widget? {
-        return Widget(id, "111")
+val AppSchema = KGraphQL.schema {
+
+    authenticatedQuery("article", forRoles = listOf(UserType.ADMIN)) {
+        resolver { id: Int?, text: String ->
+            Article(id ?: -1, text)
+        }
     }
 
-    @Deprecated("Use widgetById")
-    fun widgetByValue(value: String): Widget? {
-        return Widget(1, value)
-    }
-}
-
-class WidgetUpdater {
-    fun saveWidget(value: String): Widget? {
-        return Widget(1, value)
+    type<Article> {
+        property<String>("text") {
+            resolver { article: Article ->
+                "${article.id}: ${article.text}"
+            }
+        }
     }
 }

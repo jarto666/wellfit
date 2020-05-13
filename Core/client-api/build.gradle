@@ -45,6 +45,8 @@ dependencies {
     implementation "io.ktor:ktor-auth-jwt:$ktor_version"
     implementation "io.ktor:ktor-jackson:$ktor_version"
     implementation "io.ktor:ktor-locations:$ktor_version"
+    implementation "io.ktor:ktor-network-tls:$ktor_version"
+    implementation "com.apurebase:kgraphql:$kgraphql_version"
 
     api "com.graphql-java:graphql-java:2020-04-29T07-25-05-1a7c11c"
     implementation "com.expediagroup:graphql-kotlin-schema-generator:2.1.1"
