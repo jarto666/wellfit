@@ -17,7 +17,7 @@ import io.ktor.locations.Locations
 import io.ktor.util.KtorExperimentalAPI
 import org.koin.core.context.startKoin
 import org.koin.core.logger.PrintLogger
-import java.net.URL
+import java.net.URI
 import java.util.concurrent.TimeUnit
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -27,8 +27,6 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
 
-    //System.setProperty("javax.net.ssl.trustStore", "/resources/wellfit.jks")
-    // start a KoinApplication in Global context
     startKoin {
         // declare used logger
         logger(PrintLogger())
@@ -54,13 +52,19 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
-    var s = System.getProperty("java.home") + "\\lib\\security\\cacerts"
-    System.setProperty("javax.net.ssl.trustStore", s);
+    installAuth()
+}
+
+private fun Application.installAuth() {
+
+    //var s = System.getProperty("java.home") + "\\lib\\security\\cacerts"
+    //System.setProperty("javax.net.ssl.trustStore", s);
 
     var jwtAudience = environment.config.property("jwt.audience").getString()
     var jwkIssuer = environment.config.property("jwt.issuer").getString()
+    var jwks = environment.config.property("jwt.jwk").getString()
 
-    val jwkProvider = JwkProviderBuilder(jwkIssuer)
+    val jwkProvider = JwkProviderBuilder(URI(jwks).toURL())
         .cached(10, 24, TimeUnit.HOURS)
         .rateLimited(10, 1, TimeUnit.MINUTES)
         .build()
@@ -74,18 +78,3 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 }
-
-//import java.io.File
-//
-//object CertificateGenerator {
-//    @JvmStatic
-//    fun main(args: Array<String>) {
-//        val jksFile = File("build/temporary.jks").apply {
-//            parentFile.mkdirs()
-//        }
-//
-//        if (!jksFile.exists()) {
-//            generateCertificate(jksFile) // Generates the certificate
-//        }
-//    }
-//}

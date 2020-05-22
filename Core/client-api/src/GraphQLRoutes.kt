@@ -2,23 +2,18 @@ package com.wellfit.client.api
 
 import com.apurebase.kgraphql.context
 import com.apurebase.kgraphql.schema.Schema
-import com.auth0.jwk.JwkProvider
-import com.auth0.jwk.JwkProviderBuilder
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.wellfit.client.api.graphql.GraphQLHandler
 import com.wellfit.client.api.graphql.UnAuthorizedUserException
 import io.ktor.application.call
 import io.ktor.auth.authenticate
 import io.ktor.auth.authentication
 import io.ktor.auth.jwt.JWTPrincipal
-import io.ktor.auth.verifyWithOAuth2
 import io.ktor.http.HttpStatusCode
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Location
 import io.ktor.locations.post
 import io.ktor.request.receive
 import io.ktor.response.respond
-import io.ktor.response.respondText
 import io.ktor.routing.Route
 
 @KtorExperimentalLocationsAPI
