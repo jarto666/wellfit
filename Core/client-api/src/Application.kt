@@ -16,7 +16,9 @@ import io.ktor.jackson.jackson
 import io.ktor.locations.Locations
 import io.ktor.util.KtorExperimentalAPI
 import org.koin.core.context.startKoin
+import org.koin.dsl.module
 import org.koin.core.logger.PrintLogger
+import org.litote.kmongo.KMongo
 import java.net.URI
 import java.util.concurrent.TimeUnit
 
@@ -27,9 +29,15 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
 
+    var configuration = Configuration()
+    configuration.connectionStrings["mongo"] = environment.config.property("connectionStrings.mongo").getString()
     startKoin {
         // declare used logger
         logger(PrintLogger())
+        module {
+            single { configuration }
+            factory { KMongo.createClient(configuration.connectionStrings["mongo"]!!) }
+        }
         // declare used modules
         modules(mainModule)
     }
