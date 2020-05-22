@@ -1,31 +1,39 @@
 package com.wellfit.client.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.wellfit.client.api.graphql.GraphQLHandler
+import com.wellfit.client.api.graphql.AppSchema
 import io.ktor.application.Application
 import io.ktor.application.call
-import io.ktor.http.content.*
-import io.ktor.http.push
+import io.ktor.auth.authenticate
+import io.ktor.http.content.defaultResource
+import io.ktor.http.content.static
+import io.ktor.locations.KtorExperimentalLocationsAPI
+import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.routing
 import org.koin.ktor.ext.inject
-import java.io.File
 
+@KtorExperimentalLocationsAPI
 @Suppress("unused")
 fun Application.routes() {
 
     routing {
-        val qlHandler: GraphQLHandler by inject()
         val json: ObjectMapper by inject()
 
-        graphql(qlHandler, json)
+        graphql(AppSchema, json)
 
+        authenticate {
+            get("a") {
+                call.respondText("1232")
+            }
+        }
+
+        get("b") {
+            call.respondText("1232")
+        }
 
         static("/") {
             defaultResource("index.html")
-//            staticRootFolder = File("files")
-//
-//            default("index.html")
         }
     }
 }

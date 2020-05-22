@@ -1,40 +1,54 @@
 package com.wellfit.client.api
 
+import com.apurebase.kgraphql.context
+import com.apurebase.kgraphql.schema.Schema
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.wellfit.client.api.graphql.GraphQLHandler
+import com.wellfit.client.api.graphql.UnAuthorizedUserException
 import io.ktor.application.call
+import io.ktor.auth.authenticate
+import io.ktor.auth.authentication
+import io.ktor.auth.jwt.JWTPrincipal
+import io.ktor.http.HttpStatusCode
 import io.ktor.locations.KtorExperimentalLocationsAPI
 import io.ktor.locations.Location
 import io.ktor.locations.post
 import io.ktor.request.receive
 import io.ktor.response.respond
-import io.ktor.response.respondText
 import io.ktor.routing.Route
 
 @KtorExperimentalLocationsAPI
 @Location("/graphql")
 data class GraphQLRequest(val query: String = "", val variables: Map<String, Any>? = emptyMap())
-data class GraphQLErrors(val e: Exception)
 
-fun GraphQLErrors.asMap(): Map<String, Map<String, String>> {
-    return mapOf("errors"
-            to mapOf("message"
-            to "Caught ${e.javaClass.simpleName}: ${e.message?.replace("\"", "")}")
-    )
-}
+data class GraphQLError(val graphQLErrors: List<Map<String, String>>)
 
 @KtorExperimentalLocationsAPI
-fun Route.graphql(handler: GraphQLHandler, mapper: ObjectMapper) {
+fun Route.graphql(schema: Schema, mapper: ObjectMapper) {
 
-    post<GraphQLRequest> {
+    authenticate(optional = true) {
+        post<GraphQLRequest> {
 
-        val request = call.receive<GraphQLRequest>()
-        try {
-            val result = handler.execute(request.query, request.variables ?: emptyMap())
-            if (result.errors.isNotEmpty()) throw Exception(result.errors[0].message)
-            call.respond(mapOf("data" to result.getData<Any>()))
-        } catch (e: Exception) {
-            call.respondText(mapper.writeValueAsString(GraphQLErrors(e).asMap()))
+            try {
+                val user = call.authentication.principal<JWTPrincipal>()
+                val request = call.receive<GraphQLRequest>()
+                val result = schema.execute(
+                    request.query,
+                    request.variables.toString(),
+                    context {
+                        if (user != null) +user
+                    }
+
+                )
+//                val result = handler.execute(request.query, request.variables ?: emptyMap(), ctx = user)
+//                if (result.errors.isNotEmpty()) throw Exception(result.errors[0].message)
+                call.respond(result)
+            } catch (e: Exception) {
+                if (e is UnAuthorizedUserException) {
+                    call.respond(HttpStatusCode.Unauthorized, GraphQLError(listOf(mapOf("message" to "Unauthorized"))))
+                } else {
+                    call.respond(GraphQLError(listOf(mapOf("message" to e.localizedMessage))))
+                }
+            }
         }
     }
 }
