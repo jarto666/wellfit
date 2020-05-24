@@ -1,8 +1,12 @@
 package com.wellfit.client.api
 
 import com.auth0.jwk.JwkProviderBuilder
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.mongodb.client.MongoClient
+import com.wellfit.client.api.dao.UserRepository
 import com.wellfit.client.api.di.mainModule
+import com.wellfit.client.api.graphql.AppSchema
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.auth.Authentication
@@ -15,6 +19,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.jackson.jackson
 import io.ktor.locations.Locations
 import io.ktor.util.KtorExperimentalAPI
+import org.koin.core.context.KoinContextHandler.get
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.koin.core.logger.PrintLogger
@@ -34,10 +39,12 @@ fun Application.module(testing: Boolean = false) {
     startKoin {
         // declare used logger
         logger(PrintLogger())
-        module {
-            single { configuration }
-            factory { KMongo.createClient(configuration.connectionStrings["mongo"]!!) }
-        }
+        properties(mapOf(
+            "connectionString:mongo" to configuration.connectionStrings["mongo"]!!
+        ))
+//        modules(module {
+//            single { configuration }
+//        })
         // declare used modules
         modules(mainModule)
     }

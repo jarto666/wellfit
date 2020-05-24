@@ -1,5 +1,6 @@
 package com.wellfit.client.api.dao
 
+import com.wellfit.client.api.model.User
 import kotlin.test.Test
 
 class UserRepositoryTests {
@@ -8,19 +9,19 @@ class UserRepositoryTests {
 
     init {
         users = UserRepository(
-            "mongodb://admin:Wellfit2020@ds035037.mlab.com:35037/wellfit",
+            "mongodb://admin:Wellfit2020@ds035037.mlab.com:35037/wellfit?retryWrites=false",
             "wellfit")
     }
 
     @Test
     fun `add user test`() {
-        val user = User("TESTID1", "123", 2)
+        val user = User("Test1", "Ilya Livshits", 24)
         users.createUser(user)
     }
 
     @Test
     fun `get user test`() {
-        val user = users.getUser("TESTID1")
+        val user = users.getUser("Test1")
     }
 }
 
