@@ -1,12 +1,8 @@
 package com.wellfit.client.api
 
 import com.auth0.jwk.JwkProviderBuilder
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
-import com.mongodb.client.MongoClient
-import com.wellfit.client.api.dao.UserRepository
 import com.wellfit.client.api.di.mainModule
-import com.wellfit.client.api.graphql.AppSchema
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.auth.Authentication
@@ -19,13 +15,12 @@ import io.ktor.http.HttpMethod
 import io.ktor.jackson.jackson
 import io.ktor.locations.Locations
 import io.ktor.util.KtorExperimentalAPI
-import org.koin.core.context.KoinContextHandler.get
 import org.koin.core.context.startKoin
-import org.koin.dsl.module
 import org.koin.core.logger.PrintLogger
-import org.litote.kmongo.KMongo
 import java.net.URI
 import java.util.concurrent.TimeUnit
+import kotlin.collections.mapOf
+import kotlin.collections.set
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -42,10 +37,6 @@ fun Application.module(testing: Boolean = false) {
         properties(mapOf(
             "connectionString:mongo" to configuration.connectionStrings["mongo"]!!
         ))
-//        modules(module {
-//            single { configuration }
-//        })
-        // declare used modules
         modules(mainModule)
     }
 
@@ -57,8 +48,11 @@ fun Application.module(testing: Boolean = false) {
         method(HttpMethod.Delete)
         method(HttpMethod.Patch)
         header(HttpHeaders.Authorization)
+        header(HttpHeaders.XForwardedProto)
+        anyHost()
         allowCredentials = true
-        anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
+        allowNonSimpleContentTypes = true
+
     }
 
     install(ContentNegotiation) {
