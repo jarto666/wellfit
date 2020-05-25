@@ -39,8 +39,7 @@ fun Route.graphql(schema: Schema) {
                     }
 
                 )
-//                val result = handler.execute(request.query, request.variables ?: emptyMap(), ctx = user)
-//                if (result.errors.isNotEmpty()) throw Exception(result.errors[0].message)
+
                 call.respond(result)
             } catch (e: Exception) {
                 if (e is UnAuthorizedUserException) {
