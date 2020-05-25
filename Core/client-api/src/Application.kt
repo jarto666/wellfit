@@ -19,6 +19,8 @@ import org.koin.core.context.startKoin
 import org.koin.core.logger.PrintLogger
 import java.net.URI
 import java.util.concurrent.TimeUnit
+import kotlin.collections.mapOf
+import kotlin.collections.set
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -27,10 +29,14 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
 
+    var configuration = Configuration()
+    configuration.connectionStrings["mongo"] = environment.config.property("connectionStrings.mongo").getString()
     startKoin {
         // declare used logger
         logger(PrintLogger())
-        // declare used modules
+        properties(mapOf(
+            "connectionString:mongo" to configuration.connectionStrings["mongo"]!!
+        ))
         modules(mainModule)
     }
 
@@ -42,8 +48,11 @@ fun Application.module(testing: Boolean = false) {
         method(HttpMethod.Delete)
         method(HttpMethod.Patch)
         header(HttpHeaders.Authorization)
+        header(HttpHeaders.XForwardedProto)
+        anyHost()
         allowCredentials = true
-        anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
+        allowNonSimpleContentTypes = true
+
     }
 
     install(ContentNegotiation) {
