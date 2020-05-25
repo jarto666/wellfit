@@ -6,13 +6,16 @@ import com.apurebase.kgraphql.schema.dsl.operations.MutationDSL
 import com.apurebase.kgraphql.schema.dsl.operations.QueryDSL
 import io.ktor.auth.jwt.JWTPrincipal
 
-enum class UserType {
-    ADMIN, NON_ADMIN
+class UserRole private constructor() {
+    companion object {
+        val ADMIN = "admin"
+        val USER = "user"
+    }
 }
 
 fun SchemaBuilder.authenticatedQuery(
     name: String,
-    forRoles: List<UserType>,
+    forRoles: List<String> = emptyList(),
     init: QueryDSL.() -> Unit
 ) = query(name) {
     authenticate(forRoles)
@@ -21,7 +24,7 @@ fun SchemaBuilder.authenticatedQuery(
 
 fun SchemaBuilder.authenticatedMutation(
     name: String,
-    forRoles: List<UserType>,
+    forRoles: List<String> = emptyList(),
     init: MutationDSL.() -> Unit
 ) = mutation(name) {
     authenticate(forRoles)
@@ -29,12 +32,13 @@ fun SchemaBuilder.authenticatedMutation(
 }
 
 @Throws(InvalidActionForRoleException::class, UnAuthorizedUserException::class)
-private fun AbstractOperationDSL.authenticate(forRoles: List<UserType>) = accessRule {
+private fun AbstractOperationDSL.authenticate(forRoles: List<String>) = accessRule {
     val user = it.get<JWTPrincipal>()
         ?: return@accessRule UnAuthorizedUserException()
-//    if (!user.payload.getClaim("roles").map { role -> forRoles.contains(role) }.reduce { acc, b -> acc && b }) {
-//        return@accessRule InvalidActionForRoleException()
-//    }
+    val userRoles = user.payload.getClaim("roles")?.asString()?.split(',') ?: emptyList()
+    if (!userRoles.contains(UserRole.ADMIN) && forRoles.isNotEmpty() && !userRoles.any {it in forRoles}) {
+        return@accessRule InvalidActionForRoleException()
+    }
     null
 }
 

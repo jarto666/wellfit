@@ -1,22 +1,25 @@
 package com.wellfit.client.api.graphql
 
+import com.apurebase.kgraphql.Context
 import com.apurebase.kgraphql.KGraphQL
+import com.auth0.jwt.interfaces.Payload
+import com.wellfit.client.api.dao.UserRepository
+import com.wellfit.client.api.model.User
+import com.wellfit.client.api.service.UserService
+import io.ktor.auth.jwt.JWTPrincipal
+import org.koin.core.KoinComponent
+import org.koin.core.get
+import org.koin.java.KoinJavaComponent.get
 
-data class Article(val id: Int, val text: String)
-
-val AppSchema = KGraphQL.schema {
-
-    authenticatedQuery("article", forRoles = listOf(UserType.ADMIN)) {
-        resolver { id: Int?, text: String ->
-            Article(id ?: -1, text)
+class AppSchema(
+    val userService: UserService
+) : KoinComponent  {
+    val schema = KGraphQL.schema {
+        stringScalar<Char> {
+            deserialize = { str: String -> str[0] }
+            serialize = Char::toString
         }
-    }
 
-    type<Article> {
-        property<String>("text") {
-            resolver { article: Article ->
-                "${article.id}: ${article.text}"
-            }
-        }
+        userSchema(userService)
     }
 }

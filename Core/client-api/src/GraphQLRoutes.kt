@@ -23,7 +23,7 @@ data class GraphQLRequest(val query: String = "", val variables: Map<String, Any
 data class GraphQLError(val graphQLErrors: List<Map<String, String>>)
 
 @KtorExperimentalLocationsAPI
-fun Route.graphql(schema: Schema, mapper: ObjectMapper) {
+fun Route.graphql(schema: Schema) {
 
     authenticate(optional = true) {
         post<GraphQLRequest> {
@@ -39,12 +39,13 @@ fun Route.graphql(schema: Schema, mapper: ObjectMapper) {
                     }
 
                 )
-//                val result = handler.execute(request.query, request.variables ?: emptyMap(), ctx = user)
-//                if (result.errors.isNotEmpty()) throw Exception(result.errors[0].message)
+
                 call.respond(result)
             } catch (e: Exception) {
                 if (e is UnAuthorizedUserException) {
-                    call.respond(HttpStatusCode.Unauthorized, GraphQLError(listOf(mapOf("message" to "Unauthorized"))))
+                    call.respond(HttpStatusCode.Unauthorized,
+                        GraphQLError(listOf(mapOf("message" to "Unauthorized")))
+                    )
                 } else {
                     call.respond(GraphQLError(listOf(mapOf("message" to e.localizedMessage))))
                 }
