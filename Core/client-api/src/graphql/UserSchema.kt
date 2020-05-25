@@ -2,6 +2,8 @@ package com.wellfit.client.api.graphql
 
 import com.apurebase.kgraphql.Context
 import com.apurebase.kgraphql.schema.dsl.SchemaBuilder
+import com.wellfit.client.api.model.Gender
+import com.wellfit.client.api.model.MeasurementSystem
 import com.wellfit.client.api.model.User
 import com.wellfit.client.api.model.UserInput
 import com.wellfit.client.api.service.UserService
@@ -9,14 +11,24 @@ import org.litote.kmongo.fields
 
 fun SchemaBuilder.userSchema(userService: UserService) {
 
-    type<User> {
-        property(User::measurementSystem) {
-            description = "Two possible values: 'metric' and 'imperial'"
+    //region Types
+
+    enum<MeasurementSystem> {
+        value(MeasurementSystem.METRIC) {
+            description = "KG/CM"
+        }
+        value(MeasurementSystem.IMPERIAL) {
+            description = "LB/FT"
         }
     }
-    inputType<UserInput> {
 
-    }
+    enum<Gender>()
+    type<User>()
+    inputType<UserInput>()
+
+    //endregion
+
+    //region Queries
 
     authenticatedQuery("user") {
 
@@ -33,6 +45,10 @@ fun SchemaBuilder.userSchema(userService: UserService) {
         }
     }
 
+    //endregion
+
+    //region Mutations
+
     authenticatedMutation("createUser") {
 
         resolver { user: UserInput ->
@@ -40,4 +56,6 @@ fun SchemaBuilder.userSchema(userService: UserService) {
             createdUser
         }
     }
+
+    //endregion
 }
